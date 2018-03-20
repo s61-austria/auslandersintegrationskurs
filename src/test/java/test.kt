@@ -1,16 +1,17 @@
+import connector.Connector
 import model.Car
 import model.Countries
-import org.jetbrains.annotations.TestOnly
 import org.junit.Test
 
 class test {
-    val connector = Connector()
-
     @Test
-    fun testConnection(){
-        connector.prepare()
+    fun testConnection() {
+        val conn = Connector()
 
-        connector.subscribeToQueue(Countries.AUSTRIA, Car::class.java,{ print(it)})
+        conn.subscribeToQueue(Countries.AUSTRIA, Car::class.java, {
+            print(it)
+            assert(it != null)
+        })
 
         val car = Car(
                 "blaballba",
@@ -19,6 +20,8 @@ class test {
                 false
         )
 
-        connector.publishCar(car)
+        conn.publishCar(car)
+
+        Thread.sleep(1000)
     }
 }

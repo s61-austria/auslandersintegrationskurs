@@ -1,3 +1,5 @@
+package connector;
+
 public class Constants {
     static String carSuffix = "-car";
     static String stolenCArSuffix = "-stolencar";

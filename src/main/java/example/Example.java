@@ -1,15 +1,13 @@
-import kotlin.Unit;
+package example;
+
 import model.Car;
 import model.Countries;
 
-import javax.crypto.ExemptionMechanism;
-import java.io.Console;
+class Example {
+    private connector.Connector connector;
 
-public class Example {
-    private Connector connector;
-
-    public Example(){
-        connector = new Connector();
+    public Example() {
+        connector = new connector.Connector();
 
         connector.subscribeToQueue(Countries.IRELAND, Car.class, ((String message) -> {
             System.out.println(message);

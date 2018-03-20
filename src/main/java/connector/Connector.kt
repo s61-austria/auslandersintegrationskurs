@@ -1,3 +1,5 @@
+package connector
+
 import com.google.gson.Gson
 import com.rabbitmq.client.*
 import model.Car
@@ -8,8 +10,8 @@ import model.StolenCar
 import java.io.IOException
 import java.time.Instant
 
-class Connector {
-    val factory by lazy {
+public class Connector {
+    private val factory by lazy {
         ConnectionFactory().apply {
             username = "rabbitmq"
             password = "rabbitmq"
@@ -19,11 +21,11 @@ class Connector {
         }
     }
 
-    val channel: Channel by lazy {
+    private val channel: Channel by lazy {
         factory.newConnection().createChannel()
     }
 
-    val gson: Gson by lazy {
+    private val gson: Gson by lazy {
         Gson()
     }
 
@@ -31,7 +33,7 @@ class Connector {
         prepare()
     }
 
-    fun prepare(){
+    private fun prepare(){
         channel.exchangeDeclare(Constants.carExchangeName, BuiltinExchangeType.DIRECT)
         Countries.values().forEach {
             val queueName = "$it${Constants.carSuffix}"
@@ -53,7 +55,7 @@ class Connector {
             channel.queueBind(queueName, Constants.invoiceExchangeName, it.toString())
         }
     }
-    fun subscribe(queueName: String, handler: (message: String) -> Unit) {
+    private fun subscribe(queueName: String, handler: (message: String) -> Unit) {
         channel.basicConsume(queueName, false, "$queueName${Instant.now()}",
                 object : DefaultConsumer(channel) {
                     override fun handleDelivery(
@@ -70,7 +72,7 @@ class Connector {
                 })
     }
 
-    fun subscribeToQueue(country: Countries, type: Any, handler: (message: String) -> Unit) {
+    public fun subscribeToQueue(country: Countries, type: Any, handler: (message: String) -> Unit) {
         var queueName = "$country"
 
         when(type) {
@@ -81,7 +83,7 @@ class Connector {
         subscribe(queueName, handler)
     }
 
-    fun publishCar(car: Car) {
+    public fun publishCar(car: Car) {
         try {
             val serializedCar = gson.toJson(car)
             channel.basicPublish("car", car.destinationCountry.toString(), null, serializedCar.toByteArray())
@@ -91,7 +93,7 @@ class Connector {
 
     }
 
-    fun publishInvoice(invoice: Invoice) {
+    public fun publishInvoice(invoice: Invoice) {
         try {
             val serializedInvoice = gson.toJson(invoice)
             channel.basicPublish("invoice", invoice.destinationCountry.toString(), null, serializedInvoice.toByteArray())
