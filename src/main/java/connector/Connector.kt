@@ -14,7 +14,7 @@ import model.StolenCar
 import java.io.IOException
 import java.time.Instant
 
-public class Connector(val username: String,
+open public class Connector(val username: String,
                        val password: String,
                        val vhost: String,
                        val host: String) {
