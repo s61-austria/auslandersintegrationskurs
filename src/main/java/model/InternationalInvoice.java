@@ -3,7 +3,13 @@ package model;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Invoice implements Serializable {
+/**
+ * Represents an international invoice. It is sent to a country
+ */
+public class InternationalInvoice implements Serializable {
+    /**
+     * Relev
+     */
     private String licencePlate;
     private Double price;
     private Double distance;
@@ -11,7 +17,7 @@ public class Invoice implements Serializable {
     private Date createdDate;
     private Countries destinationCountry;
 
-    public Invoice(String licencePlate, Double price, Double distance, Date dueByDate, Date createdDate, Countries destinationCountry) {
+    public InternationalInvoice(String licencePlate, Double price, Double distance, Date dueByDate, Date createdDate, Countries destinationCountry) {
         this.licencePlate = licencePlate;
         this.price = price;
         this.distance = distance;

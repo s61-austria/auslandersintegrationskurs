@@ -1,13 +1,13 @@
-import connector.Connector
-import model.Car
-import model.Countries
+import connector.InternationalConnector
+import model.InternationalCar
 import model.Countries.AUSTRIA
+import model.Countries.IRELAND
 import org.junit.After
 import org.junit.Test
 
 class test {
     val conn by lazy {
-        Connector(
+        InternationalConnector(
                 "rabbitmq",
                 "rabbitmq",
                 "vhost",
@@ -22,12 +22,12 @@ class test {
 
     @Test
     fun testConnection() {
-        conn.subscribeToQueue(AUSTRIA, Car::class.java, { print(it) })
+        conn.subscribeToQueue(AUSTRIA, InternationalCar::class.java, { print(it) })
 
-        val car = Car(
+        val car = InternationalCar(
                 "blaballba",
-                Countries.IRELAND,
-                Countries.AUSTRIA,
+                IRELAND,
+                AUSTRIA,
                 false
         )
 

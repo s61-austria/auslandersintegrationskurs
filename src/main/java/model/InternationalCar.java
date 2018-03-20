@@ -2,14 +2,14 @@ package model;
 
 import java.io.Serializable;
 
-public class Car implements Serializable {
+public class InternationalCar implements Serializable {
 
     private String licencePlate;
     private Countries registerdInCountry;
     private Countries destinationCountry;
     private boolean isStolen;
 
-    public Car(String licencePlate, Countries registerdInCountry, Countries destinationCountry, boolean isStolen) {
+    public InternationalCar(String licencePlate, Countries registerdInCountry, Countries destinationCountry, boolean isStolen) {
         this.licencePlate = licencePlate;
         this.registerdInCountry = registerdInCountry;
         this.destinationCountry = destinationCountry;

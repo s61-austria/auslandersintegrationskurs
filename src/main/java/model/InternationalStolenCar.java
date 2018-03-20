@@ -1,11 +1,11 @@
 package model;
 
-public class StolenCar {
+public class InternationalStolenCar {
     private String licencePlate;
     private Countries originCountry;
     private boolean isStolen;
 
-    public StolenCar(String licencePlate, Countries originCountry, boolean isStolen) {
+    public InternationalStolenCar(String licencePlate, Countries originCountry, boolean isStolen) {
         this.licencePlate = licencePlate;
         this.originCountry = originCountry;
         this.isStolen = isStolen;
