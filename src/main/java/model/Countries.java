@@ -4,5 +4,5 @@ public enum Countries {
     IRELAND,
     LUXEMBOURG,
     AUSTRIA,
-    NOORWEGEN
+    NORWAY
 }

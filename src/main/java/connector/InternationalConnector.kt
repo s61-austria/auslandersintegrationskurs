@@ -14,10 +14,17 @@ import model.InternationalStolenCar
 import java.io.IOException
 import java.time.Instant
 
-open public class InternationalConnector(val username: String,
-                                         val password: String,
-                                         val vhost: String,
-                                         val host: String) {
+/**
+ * Connect to an international Car Exhange
+ * @param username Username for the MQ
+ * @param password Password for the mq
+ * @param vhost Used virtual host. Default is "vhost"
+ * @param host URI for the MQ host
+ */
+open class InternationalConnector(val username: String,
+                                  val password: String,
+                                  val vhost: String,
+                                  val host: String) {
 
     private val factory by lazy {
         ConnectionFactory().apply {
@@ -41,11 +48,19 @@ open public class InternationalConnector(val username: String,
         prepare()
     }
 
-    public fun close() {
+    /**
+     * Close the opened connection
+     */
+    fun close() {
         this.channel.close(0, "thanks!")
     }
 
-    public fun prepare() {
+    /**
+     * Prepare the RabbitMQ
+     *
+     * This function SHOULD only be run once but it's not a problem to re-ru  it every time
+     */
+    fun prepare() {
         channel.exchangeDeclare(Constants.carExchangeName, BuiltinExchangeType.DIRECT)
         Countries.values().forEach {
             val queueName = "$it${Constants.carSuffix}"
@@ -68,35 +83,56 @@ open public class InternationalConnector(val username: String,
         }
     }
 
-    private fun subscribe(queueName: String, handler: (message: String) -> Unit) {
-        channel.basicConsume(queueName, false, "$queueName${Instant.now()}",
-                object : DefaultConsumer(channel) {
-                    override fun handleDelivery(
-                            consumerTag: String,
-                            envelope: Envelope,
-                            properties: AMQP.BasicProperties,
-                            body: ByteArray) {
-                        val deliveryTag = envelope.deliveryTag
+    /**
+     * Subscribe to a queue
+     * @param queueName Name of the queue to subscribe to
+     * @param handler Function that takes a String to interpret the results
+     *          This message will be in JSON format
+     * @return Name of the queue subscribed to
+     */
+    private fun subscribe(queueName: String, handler: (message: String) -> Unit) =
+            channel.basicConsume(queueName, false, "$queueName${Instant.now()}",
+                    object : DefaultConsumer(channel) {
+                        override fun handleDelivery(
+                                consumerTag: String,
+                                envelope: Envelope,
+                                properties: AMQP.BasicProperties,
+                                body: ByteArray) {
+                            val deliveryTag = envelope.deliveryTag
 
-                        handler(body.toString(Charsets.UTF_8))
+                            handler(body.toString(Charsets.UTF_8))
 
-                        channel.basicAck(deliveryTag, false)
-                    }
-                })
-    }
+                            channel.basicAck(deliveryTag, false)
+                        }
+                    })
 
-    public fun subscribeToQueue(country: Countries, type: Any, handler: (message: String) -> Unit) {
+    /**
+     * Subscribe to a queue in a type-safe way
+     * example:
+     * ```
+     *  subscribeToQueue(Countries.Austria, InternationalCar::class.java, { println(it) })
+     * ```
+     * @param country The country that you want to receive messages from
+     * @param type The type of queue you want to attach to
+     * @param handler Function that takes a message (in JSON) and returns null. To be executed on a received message
+     * @throws IllegalArgumentException Type does not have a queue
+     */
+    fun subscribeToQueue(country: Countries, type: Any, handler: (message: String) -> Unit) {
         var queueName = "$country"
 
         when (type) {
             InternationalCar::class.java -> queueName += Constants.carSuffix
             InternationalStolenCar::class.java -> queueName += Constants.stolenCArSuffix
             InternationalInvoice::class.java -> queueName += Constants.invoiceSuffix
+            else -> throw IllegalArgumentException("This type does not have an associated queue")
         }
         subscribe(queueName, handler)
     }
 
-    public fun publishCar(internationalCar: InternationalCar) {
+    /**
+     * Send an event that a car has left your country
+     */
+    fun publishCar(internationalCar: InternationalCar) {
         try {
             val serializedCar = gson.toJson(internationalCar)
             channel.basicPublish(Constants.carExchangeName, internationalCar.destinationCountry.toString(), null, serializedCar.toByteArray())
@@ -106,6 +142,9 @@ open public class InternationalConnector(val username: String,
 
     }
 
+    /**
+     * Send an event that an invoice is ready for a license plate
+     */
     public fun publishInvoice(internationalInvoice: InternationalInvoice) {
         try {
             val serializedInvoice = gson.toJson(internationalInvoice)
@@ -116,6 +155,9 @@ open public class InternationalConnector(val username: String,
 
     }
 
+    /**
+     * Send an event that a car is reported stolen
+     */
     fun publishStolenCar(stolenInternationalCar: InternationalCar) {
         try {
             val serializedStolenCar = gson.toJson(stolenInternationalCar)
