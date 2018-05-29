@@ -1,7 +1,7 @@
-import connector.InternationalConnector
-import model.InternationalCar
-import model.Countries.AUSTRIA
-import model.Countries.IRELAND
+import com.s61.integration.connector.InternationalConnector
+import com.s61.integration.connector.model.InternationalCar
+import com.s61.integration.connector.model.Countries.AUSTRIA
+import com.s61.integration.connector.model.Countries.IRELAND
 import org.junit.After
 import org.junit.Test
 

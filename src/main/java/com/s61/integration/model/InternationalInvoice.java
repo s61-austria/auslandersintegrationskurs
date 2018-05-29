@@ -1,4 +1,4 @@
-package model;
+package com.s61.integration.model;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -17,7 +17,7 @@ public class InternationalInvoice implements Serializable {
     private Date createdDate;
     private Countries destinationCountry;
 
-    public InternationalInvoice(String licencePlate, Double price, Double distance, Date dueByDate, Date createdDate, Countries destinationCountry) {
+    public InternationalInvoice(String licencePlate, Double price, Double distance, Date dueByDate, Date createdDate) {
         this.licencePlate = licencePlate;
         this.price = price;
         this.distance = distance;
