@@ -1,4 +1,4 @@
-package connector;
+package com.s61.integration.connector;
 
 public class Constants {
     static String carSuffix = "-car";

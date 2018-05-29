@@ -1,7 +1,7 @@
-import connector.InternationalConnector
-import model.InternationalCar
-import model.Countries.AUSTRIA
-import model.Countries.IRELAND
+import com.s61.integration.connector.InternationalConnector
+import com.s61.integration.model.Countries
+import com.s61.integration.model.Countries.AUSTRIA
+import com.s61.integration.model.InternationalCar
 import org.junit.After
 import org.junit.Test
 
@@ -26,8 +26,7 @@ class test {
 
         val car = InternationalCar(
                 "blaballba",
-                IRELAND,
-                AUSTRIA,
+                Countries.IRELAND,
                 false
         )
 

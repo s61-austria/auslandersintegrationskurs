@@ -1,4 +1,4 @@
-package connector
+package com.s61.integration.connector
 
 import com.google.gson.Gson
 import com.rabbitmq.client.AMQP
@@ -7,11 +7,10 @@ import com.rabbitmq.client.Channel
 import com.rabbitmq.client.ConnectionFactory
 import com.rabbitmq.client.DefaultConsumer
 import com.rabbitmq.client.Envelope
-import model.Countries
-import model.InternationalCar
-import model.InternationalInvoice
-import model.InternationalStolenCar
-import java.io.IOException
+import com.s61.integration.model.Countries
+import com.s61.integration.model.InternationalCar
+import com.s61.integration.model.InternationalInvoice
+import com.s61.integration.model.InternationalStolenCar
 import java.time.Instant
 
 /**
@@ -133,38 +132,29 @@ open class InternationalConnector(val username: String,
      * Send an event that a car has left your country
      */
     fun publishCar(internationalCar: InternationalCar) {
-        try {
-            val serializedCar = gson.toJson(internationalCar)
-            channel.basicPublish(Constants.carExchangeName, internationalCar.destinationCountry.toString(), null, serializedCar.toByteArray())
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
+        val serializedCar = gson.toJson(internationalCar)
+        channel.basicPublish(Constants.carExchangeName, "", null, serializedCar.toByteArray())
     }
 
     /**
      * Send an event that an invoice is ready for a license plate
      */
-    public fun publishInvoice(internationalInvoice: InternationalInvoice) {
-        try {
-            val serializedInvoice = gson.toJson(internationalInvoice)
-            channel.basicPublish(Constants.invoiceExchangeName, internationalInvoice.destinationCountry.toString(), null, serializedInvoice.toByteArray())
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
+    fun publishInvoice(internationalInvoice: InternationalInvoice) {
+        val serializedInvoice = gson.toJson(internationalInvoice)
+        channel.basicPublish(Constants.invoiceExchangeName, "", null, serializedInvoice.toByteArray())
     }
 
     /**
      * Send an event that a car is reported stolen
      */
-    fun publishStolenCar(stolenInternationalCar: InternationalCar) {
-        try {
-            val serializedStolenCar = gson.toJson(stolenInternationalCar)
-            channel.basicPublish(Constants.stolenCarExchangeName, stolenInternationalCar.destinationCountry.toString(), null, serializedStolenCar.toByteArray())
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
+    fun publishStolenCar(stolenInternationalCar: InternationalStolenCar) {
+        val serializedStolenCar = gson.toJson(stolenInternationalCar)
+        channel.basicPublish(Constants.stolenCarExchangeName, "", null, serializedStolenCar.toByteArray())
+    }
 
+    enum class Exchanges {
+        STOLENCAR,
+        CAR,
+        INVOICE
     }
 }

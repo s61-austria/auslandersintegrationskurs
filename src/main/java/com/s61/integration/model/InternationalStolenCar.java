@@ -1,4 +1,4 @@
-package model;
+package com.s61.integration.model;
 
 public class InternationalStolenCar {
     private String licencePlate;
