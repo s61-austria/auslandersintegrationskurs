@@ -60,14 +60,14 @@ open class InternationalConnector(val username: String,
      * This function SHOULD only be run once but it's not a problem to re-ru  it every time
      */
     fun prepare() {
-        channel.exchangeDeclare(Constants.carExchangeName, BuiltinExchangeType.DIRECT)
+        channel.exchangeDeclare(Constants.carExchangeName, BuiltinExchangeType.FANOUT)
         Countries.values().forEach {
             val queueName = "$it${Constants.carSuffix}"
             channel.queueDeclare(queueName, true, false, false, null)
             channel.queueBind(queueName, Constants.carExchangeName, it.toString())
         }
 
-        channel.exchangeDeclare(Constants.stolenCarExchangeName, BuiltinExchangeType.DIRECT)
+        channel.exchangeDeclare(Constants.stolenCarExchangeName, BuiltinExchangeType.FANOUT)
         Countries.values().forEach {
             val queueName = "$it${Constants.stolenCArSuffix}"
             channel.queueDeclare(queueName, true, false, false, null)
