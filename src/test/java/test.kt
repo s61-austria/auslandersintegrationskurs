@@ -1,7 +1,8 @@
+
 import com.s61.integration.connector.InternationalConnector
 import com.s61.integration.model.Countries
-import com.s61.integration.model.Countries.AUSTRIA
 import com.s61.integration.model.InternationalCar
+import com.s61.integration.model.InternationalStolenCar
 import org.junit.After
 import org.junit.Test
 
@@ -22,7 +23,7 @@ class test {
 
     @Test
     fun testConnection() {
-        conn.subscribeToQueue(AUSTRIA, InternationalCar::class.java, { print(it) })
+        conn.subscribeToQueue(Countries.AUSTRIA, InternationalCar::class.java, { print(it) })
 
         val car = InternationalCar(
                 "blaballba",
@@ -34,4 +35,6 @@ class test {
 
         Thread.sleep(1000)
     }
+
+
 }
