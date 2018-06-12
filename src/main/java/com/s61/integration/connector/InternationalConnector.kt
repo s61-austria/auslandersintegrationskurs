@@ -139,9 +139,9 @@ open class InternationalConnector(val username: String,
     /**
      * Send an event that an invoice is ready for a license plate
      */
-    fun publishInvoice(internationalInvoice: InternationalInvoice) {
+    fun publishInvoice(internationalInvoice: InternationalInvoice, country: Countries) {
         val serializedInvoice = gson.toJson(internationalInvoice)
-        channel.basicPublish(Constants.invoiceExchangeName, "", null, serializedInvoice.toByteArray())
+        channel.basicPublish(Constants.invoiceExchangeName, country.name, null, serializedInvoice.toByteArray())
     }
 
     /**
